@@ -1,21 +1,23 @@
 import type { Request, Response } from 'express';
 import issueServices from './issue.service';
 import sendResponse from '../../utils/sendResponse';
+import { getErrorMessage } from '../../utils/getError';
 
 const createIssue = async (req: Request, res: Response) => {
   try {
-    const result = await issueServices.createIssueDb(req.body);
+    const reporterId = req.user.id;
+    const result = await issueServices.createIssueDb(req.body, reporterId);
     sendResponse(res, {
       success: true,
-      status: 200,
+      status: 201,
       message: 'Issue Created successfully',
       data: result.rows[0],
     });
-  } catch (error) {
+  } catch (error:unknown) {
     sendResponse(res, {
       success: false,
       status: 500,
-      message: error.message,
+      message: getErrorMessage(error),
       data: {},
     });
   }

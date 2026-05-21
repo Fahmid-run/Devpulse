@@ -3,3 +3,5 @@ export interface IssuesPayload {
   description: string;
   type: string;
 }
+
+export type UserRole = 'contributor'| 'maintainer';

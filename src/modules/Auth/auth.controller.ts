@@ -2,14 +2,13 @@ import type { Request, Response } from 'express';
 import { pool } from '../../db/db';
 import authServices from './auth.service';
 import sendResponse from '../../utils/sendResponse';
-// import sendResponse from "../../utils/sendResponse";
 
 const signUpUser = async (req: Request, res: Response) => {
   try {
     const result = await authServices.createUserDb(req.body);
     sendResponse(res, {
       success: true,
-      status: 200,
+      status: 201,
       message: 'User Created successfully',
       data: result.rows[0],
     });

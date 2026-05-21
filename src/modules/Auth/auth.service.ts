@@ -49,7 +49,6 @@ const loginUserDb = async (payload: { email: string; password: string }) => {
   const jwtPayload = {
     id: user.id,
     name: user.name,
-    email: user.email,
     role: user.role,
   };
 
@@ -61,7 +60,7 @@ const loginUserDb = async (payload: { email: string; password: string }) => {
      jwtPayload,
      configuration.JWT_REFRESH_SECRET as string,
      {
-       expiresIn: '1d',
+       expiresIn: '7d',
      },
    );
 
