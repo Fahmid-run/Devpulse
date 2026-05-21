@@ -1,0 +1,21 @@
+import express, { type Application, type Request, type Response } from 'express';
+import { authRoute } from './modules/Auth/auth.route';
+import { issuesRoute } from './modules/Issues/issues.route';
+const app: Application = express();
+
+//middlewares
+
+app.use(express.json());
+
+
+//endpoints
+
+app.get('/', (req:Request, res:Response) => {
+  res.end('root route');
+});
+
+
+app.use('/api/auth', authRoute);
+app.use("/api/issues",issuesRoute)
+
+export default app;
