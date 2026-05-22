@@ -30,6 +30,7 @@ const getSingleIssue = async (req: Request, res: Response) => {
   try {
     const result = await issueServices.getSingleIssueFromDb(id);
     const issue = result.rows[0];
+    delete issue.reporter_id;
     if (!issue) {
       return sendResponse.sendErrorResponse(res, {
         success: false,
@@ -38,20 +39,7 @@ const getSingleIssue = async (req: Request, res: Response) => {
       });
     }
 
-    const formattedIssue = {
-      id: issue.id,
-      title: issue.title,
-      description: issue.description,
-      type: issue.type,
-      status: issue.status,
-      reporter: {
-        id: issue.reporter_id,
-        name: '', // Replace with actual dynamic variable
-        role: '', // Replace with actual dynamic variable
-      },
-      created_at: issue.created_at,
-      updated_at: issue.updated_at,
-    };
+    
 
     return sendResponse.sendMsgResponse(res, {
       success: true,
@@ -104,7 +92,7 @@ const updateIssue = async (req: Request, res: Response) => {
     const reporter_id = issue.reporter_id;
     const isContributor = role === 'contributor';
     const isOpen = issue.status === 'open';
-    const isOwnedIssue = reporter_id == id;
+    const isOwnedIssue = reporter_id === id;
 
     if (isContributor) {
       if (!isOwnedIssue) {

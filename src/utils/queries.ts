@@ -28,6 +28,7 @@ export const getIssueDetailsById = `
     i.description,
     i.type,
     i.status,
+    i.reporter_id,
     json_build_object(
       'id', u.id,
       'name', u.name,

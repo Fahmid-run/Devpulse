@@ -35,6 +35,7 @@ const authToken = () => {
         status: 401,
         message: 'invalid or expired token!',
       });
+      next(error)
     }
   }
 }
