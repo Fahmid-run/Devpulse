@@ -1,7 +1,46 @@
-export const getUserById = `
-    SELECT * FROM user WHERE id=$1
-    `;
+export const getAllIssueDetails = `
+ SELECT 
+    i.id,
+    i.title,
+    i.description,
+    i.type,
+    i.status,
+    json_build_object(
+      'id', u.id,
+      'name', u.name,
+      'role', u.role
+    )AS reporter,
+     i.created_at,
+    i.updated_at
+     
+  FROM issues i
+  LEFT JOIN users u ON i.reporter_id = u.id 
+  
+`;
 
+
+
+
+export const getIssueDetailsById = `
+    SELECT 
+    i.id,
+    i.title,
+    i.description,
+    i.type,
+    i.status,
+    json_build_object(
+      'id', u.id,
+      'name', u.name,
+      'role', u.role
+    )AS reporter,
+     i.created_at,
+    i.updated_at
+     
+  FROM issues i
+  LEFT JOIN users u ON i.reporter_id = u.id
+  WHERE i.id = $1;
+    `;
+export const getUserById = ` SELECT * FROM users WHERE id=$1`;
 export const updateDataByid = `
     UPDATE issues SET
     title=COALESCE($1, title),

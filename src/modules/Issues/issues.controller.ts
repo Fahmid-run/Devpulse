@@ -29,31 +29,64 @@ const getSingleIssue = async (req: Request, res: Response) => {
   const { id } = req.params;
   try {
     const result = await issueServices.getSingleIssueFromDb(id);
-    if (!result.rows[0]) {
+    const issue = result.rows[0];
+    if (!issue) {
       return sendResponse.sendErrorResponse(res, {
         success: false,
         status: StatusCodes.NOT_FOUND,
         message: 'Issue not found',
       });
     }
+
+    const formattedIssue = {
+      id: issue.id,
+      title: issue.title,
+      description: issue.description,
+      type: issue.type,
+      status: issue.status,
+      reporter: {
+        id: issue.reporter_id,
+        name: '', // Replace with actual dynamic variable
+        role: '', // Replace with actual dynamic variable
+      },
+      created_at: issue.created_at,
+      updated_at: issue.updated_at,
+    };
+
     return sendResponse.sendMsgResponse(res, {
       success: true,
       status: StatusCodes.OK,
-      data: result.rows[0],
+      data: issue,
     });
   } catch (error) {
     return sendResponse.sendErrorResponse(res, {
       success: false,
       status: StatusCodes.INTERNAL_SERVER_ERROR,
       message: getErrorMessage(error),
-      errors:error
+      errors: error,
     });
   }
 };
-
+const getAllIssues = async (req: Request, res: Response) => {
+  try {
+    const getAllIssues = await issueServices.getAllIssueFromDb();
+    return sendResponse.sendMsgResponse(res, {
+      success: true,
+      status: StatusCodes.OK,
+      data: getAllIssues.rows,
+    });
+  } catch (error) {
+    return sendResponse.sendErrorResponse(res, {
+      success: false,
+      status: StatusCodes.INTERNAL_SERVER_ERROR,
+      message: getErrorMessage(error),
+      errors: error,
+    });
+  }
+};
 const updateIssue = async (req: Request, res: Response) => {
   try {
-    const { role, id } = req.user;
+    const { id,role } = req.user;
     const issueID = req.params.id;
 
     const issueResult = await issueServices.getSingleIssueFromDb(issueID);
@@ -68,9 +101,10 @@ const updateIssue = async (req: Request, res: Response) => {
 
     const issue = issueResult.rows[0];
 
+    const reporter_id = issue.reporter_id;
     const isContributor = role === 'contributor';
     const isOpen = issue.status === 'open';
-    const isOwnedIssue = issue.reporter_id === id;
+    const isOwnedIssue = reporter_id == id;
 
     if (isContributor) {
       if (!isOwnedIssue) {
@@ -98,9 +132,9 @@ const updateIssue = async (req: Request, res: Response) => {
       success: true,
       status: StatusCodes.OK,
       message: 'Issue updated successfully',
-      data:updateIssueResult.rows[0]
+      data: updateIssueResult.rows[0],
     });
-  } catch (error:unknown) {
+  } catch (error: unknown) {
     return sendResponse.sendErrorResponse(res, {
       success: false,
       status: StatusCodes.INTERNAL_SERVER_ERROR,
@@ -115,23 +149,24 @@ const deleteIssue = async (req: Request, res: Response) => {
 
   try {
     const deleteResult = await issueServices.deleteIssuesDB(issueId as string);
-     return sendResponse.sendMsgResponse(res, {
-       success: true,
-       status: StatusCodes.OK,
-       message: 'Issue deleted successfully',
-     });
+    return sendResponse.sendMsgResponse(res, {
+      success: true,
+      status: StatusCodes.OK,
+      message: 'Issue deleted successfully',
+    });
   } catch (error) {
-     return sendResponse.sendErrorResponse(res, {
-       success: false,
-       status: StatusCodes.INTERNAL_SERVER_ERROR,
-       message: getErrorMessage(error),
-     });
+    return sendResponse.sendErrorResponse(res, {
+      success: false,
+      status: StatusCodes.INTERNAL_SERVER_ERROR,
+      message: getErrorMessage(error),
+    });
   }
 };
 
 export const issueController = {
   createIssue,
   getSingleIssue,
+  getAllIssues,
   updateIssue,
   deleteIssue,
 };

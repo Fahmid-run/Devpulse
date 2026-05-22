@@ -56,17 +56,10 @@ const loginUserDb = async (payload: { email: string; password: string }) => {
     expiresIn: '1d',
   });
 
-   const refreshToken = jwt.sign(
-     jwtPayload,
-     configuration.JWT_REFRESH_SECRET as string,
-     {
-       expiresIn: '7d',
-     },
-   );
+  
 
   return {
-    accessToken,
-    refreshToken
+    accessToken
   }
 };
 

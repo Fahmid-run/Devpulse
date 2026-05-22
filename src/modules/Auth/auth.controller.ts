@@ -2,12 +2,7 @@ import type { Request, Response } from 'express';
 import authServices from './auth.service';
 import sendResponse from '../../utils/sendResponse';
 import { getErrorMessage } from '../../utils/getError';
-import {
-  ReasonPhrases,
-  StatusCodes,
-  getReasonPhrase,
-  getStatusCode,
-} from 'http-status-codes';
+import { StatusCodes } from 'http-status-codes';
 
 const signUpUser = async (req: Request, res: Response) => {
   try {
@@ -30,9 +25,9 @@ const signUpUser = async (req: Request, res: Response) => {
 const loginUser = async (req: Request, res: Response) => {
   try {
     const result = await authServices.loginUserDb(req.body);
-    const { refreshToken } = result;
+    const { accessToken } = result;
 
-    res.cookie('refresh_token', refreshToken, {
+    res.cookie('token', accessToken, {
       secure: false, // In production => true
       httpOnly: true,
       sameSite: 'lax',
@@ -41,9 +36,9 @@ const loginUser = async (req: Request, res: Response) => {
     sendResponse.sendMsgResponse(res, {
       success: true,
       status: StatusCodes.OK,
-      message: 'login success',
+      message: 'Login successfull',
       data: {
-        refreshToken,
+        token:accessToken,
       },
     });
   } catch (error: unknown) {

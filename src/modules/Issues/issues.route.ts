@@ -1,7 +1,6 @@
 import { Router, type Request, type Response } from 'express';
 import { issueController } from './issues.controller';
 import auth from '../../middleware/auth.middleware';
-import authController from '../Auth/auth.controller';
 
 const route: Router = Router();
 
@@ -15,6 +14,10 @@ route.post(
 
 //get single issues
 route.get('/:id', issueController.getSingleIssue);
+
+//get all issues
+route.get('/', issueController.getAllIssues);
+
 
 //update issues
 route.patch(

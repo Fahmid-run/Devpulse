@@ -4,6 +4,7 @@ import jwt, { type JwtPayload } from 'jsonwebtoken';
 import configuration from '../config';
 import { pool } from '../db/db';
 import sendResponse from '../utils/sendResponse';
+import { getUserById } from '../utils/queries';
 
 
 
@@ -12,7 +13,7 @@ const authToken = () => {
     try {
       const token = req.headers.authorization;
        if (!token) {
-         return sendResponse(res, {
+         return sendResponse.sendErrorResponse(res, {
            success: false,
            status: 401,
            message: 'unauthorized access!!',
@@ -21,7 +22,7 @@ const authToken = () => {
       
         const decoded = jwt.verify(
           token as string,
-          configuration.JWT_REFRESH_SECRET as string,
+          configuration.JWT_SECRET as string,
         ) as JwtPayload;
 
 
@@ -29,7 +30,7 @@ const authToken = () => {
       next()
       
     } catch (error) {
-      return sendResponse(res, {
+      return sendResponse.sendErrorResponse(res, {
         success: false,
         status: 401,
         message: 'invalid or expired token!',
@@ -45,33 +46,27 @@ const authUserRole = (...roles: UserRole[]) => {
     try {
 
      if (!req.user) {
-       return sendResponse(res, {
+       return sendResponse.sendErrorResponse(res, {
          success: false,
          status: 401,
          message: 'unauthorized access!!',
        });
      }
      
-      const getUserData = pool.query(
-        `
-      SELECT * FROM users WHERE id=$1
-      `,
-        [req.user.id],
-      );
+      const getUserData = pool.query(getUserById, [req.user.id]);
 
       const user = (await getUserData).rows[0];
 
       if (!user) {
-        return sendResponse(res, {
+        return sendResponse.sendErrorResponse(res, {
           success: false,
           status: 401,
-          message: 'unauthorized',
-          data: {},
+          message: 'unauthorized'
         });
       }
 
       if (roles.length && !roles.includes(req.user.role)) {
-        return sendResponse(res, {
+        return sendResponse.sendErrorResponse(res, {
           success: false,
           status: 403,
           message: 'forbidden',
