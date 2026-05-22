@@ -2,6 +2,7 @@ import type { Request, Response } from 'express';
 import issueServices from './issue.service';
 import sendResponse from '../../utils/sendResponse';
 import { getErrorMessage } from '../../utils/getError';
+import { StatusCodes } from 'http-status-codes';
 
 const createIssue = async (req: Request, res: Response) => {
   try {
@@ -9,14 +10,14 @@ const createIssue = async (req: Request, res: Response) => {
     const result = await issueServices.createIssueDb(req.body, reporterId);
     return sendResponse.sendMsgResponse(res, {
       success: true,
-      status: 201,
+      status: StatusCodes.CREATED,
       message: 'Issue Created successfully',
       data: result.rows[0],
     });
   } catch (error: unknown) {
     return sendResponse.sendErrorResponse(res, {
       success: false,
-      status: 500,
+      status: StatusCodes.INTERNAL_SERVER_ERROR,
       message: getErrorMessage(error),
       errors: error,
     });
@@ -31,19 +32,19 @@ const getSingleIssue = async (req: Request, res: Response) => {
     if (!result.rows[0]) {
       return sendResponse.sendErrorResponse(res, {
         success: false,
-        status: 404,
+        status: StatusCodes.NOT_FOUND,
         message: 'Issue not found',
       });
     }
     return sendResponse.sendMsgResponse(res, {
       success: true,
-      status: 200,
+      status: StatusCodes.OK,
       data: result.rows[0],
     });
   } catch (error) {
     return sendResponse.sendErrorResponse(res, {
       success: false,
-      status: 500,
+      status: StatusCodes.INTERNAL_SERVER_ERROR,
       message: getErrorMessage(error),
       errors:error
     });
@@ -60,7 +61,7 @@ const updateIssue = async (req: Request, res: Response) => {
     if (issueResult.rows.length === 0) {
       return sendResponse.sendErrorResponse(res, {
         success: false,
-        status: 404,
+        status: StatusCodes.NOT_FOUND,
         message: 'Issue Not Found',
       });
     }
@@ -75,14 +76,14 @@ const updateIssue = async (req: Request, res: Response) => {
       if (!isOwnedIssue) {
         return sendResponse.sendErrorResponse(res, {
           success: false,
-          status: 403,
+          status: StatusCodes.FORBIDDEN,
           message: 'You can update only your own issue',
         });
       }
       if (!isOpen) {
         return sendResponse.sendErrorResponse(res, {
           success: false,
-          status: 403,
+          status: StatusCodes.FORBIDDEN,
           message: 'You can update issue only when status is open ',
         });
       }
@@ -95,14 +96,14 @@ const updateIssue = async (req: Request, res: Response) => {
 
     return sendResponse.sendMsgResponse(res, {
       success: true,
-      status: 200,
+      status: StatusCodes.OK,
       message: 'Issue updated successfully',
       data:updateIssueResult.rows[0]
     });
   } catch (error:unknown) {
     return sendResponse.sendErrorResponse(res, {
       success: false,
-      status: 500,
+      status: StatusCodes.INTERNAL_SERVER_ERROR,
       message: getErrorMessage(error),
       errors: error,
     });
@@ -116,13 +117,13 @@ const deleteIssue = async (req: Request, res: Response) => {
     const deleteResult = await issueServices.deleteIssuesDB(issueId as string);
      return sendResponse.sendMsgResponse(res, {
        success: true,
-       status: 200,
+       status: StatusCodes.OK,
        message: 'Issue deleted successfully',
      });
   } catch (error) {
      return sendResponse.sendErrorResponse(res, {
        success: false,
-       status: 500,
+       status: StatusCodes.INTERNAL_SERVER_ERROR,
        message: getErrorMessage(error),
      });
   }
