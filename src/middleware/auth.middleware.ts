@@ -4,35 +4,65 @@ import jwt, { type JwtPayload } from 'jsonwebtoken';
 import configuration from '../config';
 import { pool } from '../db/db';
 import sendResponse from '../utils/sendResponse';
-const authUserRole = (...roles: UserRole[]) => {
+
+
+
+const authToken = () => {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       const token = req.headers.authorization;
+       if (!token) {
+         return sendResponse(res, {
+           success: false,
+           status: 401,
+           message: 'unauthorized access!!',
+         });
+       }
+      
+        const decoded = jwt.verify(
+          token as string,
+          configuration.JWT_REFRESH_SECRET as string,
+        ) as JwtPayload;
 
-      if (!token) {
-        sendResponse(res, {
-          success: false,
-          status: 401,
-          message: 'unauthorized access!!',
-        });
-      }
 
-      const decoded = jwt.verify(
-        token as string,
-        configuration.JWT_REFRESH_SECRET as string,
-      ) as JwtPayload;
+      req.user = decoded;
+      next()
+      
+    } catch (error) {
+      return sendResponse(res, {
+        success: false,
+        status: 401,
+        message: 'invalid or expired token!',
+      });
+    }
+  }
+}
 
+
+
+const authUserRole = (...roles: UserRole[]) => {
+  return async (req: Request, res: Response, next: NextFunction) => {
+    try {
+
+     if (!req.user) {
+       return sendResponse(res, {
+         success: false,
+         status: 401,
+         message: 'unauthorized access!!',
+       });
+     }
+     
       const getUserData = pool.query(
         `
       SELECT * FROM users WHERE id=$1
       `,
-        [decoded.id],
+        [req.user.id],
       );
 
       const user = (await getUserData).rows[0];
 
-      if (user.length === 0) {
-        sendResponse(res, {
+      if (!user) {
+        return sendResponse(res, {
           success: false,
           status: 401,
           message: 'unauthorized',
@@ -40,15 +70,16 @@ const authUserRole = (...roles: UserRole[]) => {
         });
       }
 
-      if (roles.length && !roles.includes(decoded.role)) {
-        sendResponse(res, {
+      if (roles.length && !roles.includes(req.user.role)) {
+        return sendResponse(res, {
           success: false,
           status: 403,
           message: 'forbidden',
         });
       }
 
-      req.user = decoded;
+      req.user = user;
+
       next();
     } catch (error) {
       next(error);
@@ -58,5 +89,6 @@ const authUserRole = (...roles: UserRole[]) => {
 
 const auth = {
   authUserRole,
+  authToken,
 };
 export default auth;
