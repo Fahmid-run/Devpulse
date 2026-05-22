@@ -1,6 +1,6 @@
 import { pool } from '../../db/db';
 import type { IssuesPayload } from '../../types';
-import { getUserById, updateDataByid } from '../../utils/queries';
+import { deleteIssueByid, getUserById, updateDataByid } from '../../utils/queries';
 
 const createIssueDb = async (payload: IssuesPayload, reporterId: number) => {
   const { title, description, type } = payload;
@@ -21,19 +21,23 @@ const getSingleIssueFromDb = async (id: unknown) => {
   return result;
 };
 
-const updateissuesDb = async (payload, issueID: number) => {
-  const { title, description, type } = payload;
-  const result = await pool.query(
-    `
-      UPDATE issues SET
-      title=$1,
-      description=$2,
-      type=$3
-      WHERE id=$4
-      RETURNING *
-    `,
-    [title, description, type, issueID],
-  );
+const updateissuesDb = async (payload:IssuesPayload, issueID: string) => {
+  const { title, description, type ,status} = payload;
+  const result = await pool.query(updateDataByid, [
+    title,
+    description,
+    type,
+    status,
+    issueID,
+  ]);
+
+  return result;
+}
+
+
+const deleteIssuesDB = async (id: string) => {
+  
+  const result = await pool.query(deleteIssueByid,[id])
 
   return result;
 }
@@ -41,5 +45,6 @@ const issueServices = {
   createIssueDb,
   getSingleIssueFromDb,
   updateissuesDb,
+  deleteIssuesDB,
 };
 export default issueServices;

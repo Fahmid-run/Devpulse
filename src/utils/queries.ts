@@ -1,4 +1,3 @@
-
 export const getUserById = `
     SELECT * FROM user WHERE id=$1
     `;
@@ -8,6 +7,12 @@ export const updateDataByid = `
     title=COALESCE($1, title),
     description=COALESCE($2 ,description),
     type=COALESCE($3, type),
-    status=COALESCE($4, status)
-     WHERE 'id'=$5 RETURNING *
+    status= COALESCE($4,status)
+     WHERE id=$5 RETURNING *
     `;
+
+export const deleteIssueByid = `
+    
+      DELETE FROM issues WHERE id=$1
+    
+`;
