@@ -4,7 +4,7 @@
 > **Internal Tech Issue & Feature Tracker**
 > A collaborative platform for software teams to report bugs, suggest features, and coordinate resolutions efficiently.
 
-🔗 **Live Application URL:** *[Insert Live URL Here]*
+🔗 **Live Application URL:** *[[Live Link >](https://devpulse-sand.vercel.app/)]*
 
 ---
 
@@ -16,8 +16,6 @@
 * **🛡️ Secure Operations:** - Anyone with an account can edit an issue.
 * Only users with the `maintainer` role have the permission to permanently delete issues.
 
-
-* **🔍 Advanced Retrieval:** Get all issues with built-in optional sorting and filtering mechanisms.
 
 ---
 
@@ -95,7 +93,7 @@ npm start
 | Endpoint | Method | Access | Description |
 | --- | --- | --- | --- |
 | `/api/issues` | `POST` | Authenticated | Create a new bug report or feature request. |
-| `/api/issues` | `GET` | Authenticated | Retrieve all issues with optional sorting and filtering (e.g., `?sort=newest`). |
+| `/api/issues` | `GET` | Authenticated | Retrieve all issues|
 | `/api/issues/:id` | `GET` | Authenticated | Retrieve full details of a specific issue by its ID. |
 | `/api/issues/:id` | `PATCH` | Authenticated | Update an issue's title, description, or type. |
 | `/api/issues/:id` | `DELETE` | **Maintainer Only** | Permanently remove an issue from the system. |

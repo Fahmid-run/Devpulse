@@ -7,9 +7,9 @@
   "main": "test.js",
   "type": "module",
   "scripts": {
-      "dev": "NODE_OPTIONS=\"--no-network-family-autoselection\" tsx watch ./src/server.ts",
+      "dev": "tsx watch ./src/server.ts",
       "build": "tsup",
-      "start": "NODE_OPTIONS=\"--no-network-family-autoselection\" node dist/server.js"
+      "start": " node dist/server.js"
   },
   "dependencies": {
     "@types/jsonwebtoken": "^9.0.10",
