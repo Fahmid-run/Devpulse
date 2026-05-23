@@ -21,7 +21,7 @@ app.use(cors(corsoptions));
 //endpoints
 
 app.get('/', (req:Request, res:Response) => {
-  res.end('root route');
+  res.send('root route');
 });
 
 

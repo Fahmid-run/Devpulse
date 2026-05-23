@@ -37,5 +37,9 @@
     "noUncheckedSideEffectImports": true,
     "moduleDetection": "force",
     "skipLibCheck": true,
-  }
+    "moduleResolution": "bundler",
+    "esModuleInterop": true
+  },
+
+  "include": ["src/**/*", "src/types/express.d.ts"]
 }

@@ -30,12 +30,9 @@ const authToken = () => {
       next()
       
     } catch (error) {
-      return sendResponse.sendErrorResponse(res, {
-        success: false,
-        status: 401,
-        message: 'invalid or expired token!',
-      });
+     
       next(error)
+      
     }
   }
 }
@@ -77,7 +74,7 @@ const authUserRole = (...roles: UserRole[]) => {
       req.user = user;
 
       next();
-    } catch (error) {
+    } catch (error:unknown) {
       next(error);
     }
   };
