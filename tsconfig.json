@@ -3,7 +3,6 @@
     // File Layout
     "rootDir": "./src",
     "outDir": "./dist",
-
     // Environment Settings
     "module": "esnext",
     "target": "esnext",
