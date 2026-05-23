@@ -53,14 +53,12 @@ npm install
 Create a `.env` file in the root directory and configure your environment variables (Database credentials, JWT secret, Port, etc.):
 
 ```env
-PORT= 2000
+PORT= 5000
 
 JWT_SECRET=your_jwt_secret_key_here
 CONNECTION_STRING=your_database_connection _string_here
 
-JWT_SECRET=your_jwt_secret_key_here
 
-JWT_REFRESH_SECRET=your_jwt_Refresh_secret_key_here
 
 ```
 

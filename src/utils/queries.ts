@@ -19,6 +19,12 @@ export const getAllIssueDetails = `
 `;
 
 
+export const findUserByEmailQuery = `SELECT * FROM users WHERE email=$1`;
+
+
+export const createUserQuery = ` INSERT INTO users(name, email, password, role) 
+    VALUES($1, $2, $3, $4) 
+    RETURNING *;`;
 
 
 export const getIssueDetailsById = `

@@ -5,5 +5,12 @@ export interface IssuesPayload {
   status?: string;
 }
 
+export default interface IUser {
+  name: string;
+  email: string;
+  password: string;
+  role: string;
+}
+
 export type UserRole = 'contributor' | 'maintainer';
 
